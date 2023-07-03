@@ -13,7 +13,9 @@ enum code_retour {
 };
 
 int nb_element = 0;	
+int nb_element2 = 0;	
 float pile[MAX_PILE] = { 0 };
+float pile2[MAX_PILE] = { 0 };
 
 char caracteres[MAX_PILE];
 
@@ -31,11 +33,11 @@ int lecture(){
 int affichage(){
 	int i;
 
-	printf("# ");
+	printf("\n\n ");
 	for (i = nb_element;i > 0;i--){
-		printf("%f ",pile[i-1]);
+		printf("# %f\n",pile[i-1]);
 	}
-	printf("\n");
+	printf("\n\n");
 	return 0;
 }
 
@@ -50,6 +52,19 @@ void push(float f) {
 	nb_element ++;
 	pile[nb_element-1] = f;
 }
+
+float pop2() {
+	float f = pile2[nb_element2-1];
+	pile2[nb_element2-1] = 0;
+	nb_element2 --;
+	return f;
+}
+
+void push2(float f) {
+	nb_element2 ++;
+	pile2[nb_element2-1] = f;
+}
+
 
 
 enum code_retour rentre_pile(){
@@ -116,11 +131,110 @@ enum code_retour rentre_pile(){
 				push(f); 
 				push(f); 
 			}
-		} else if (!strcmp(caracteres, "p")){
+		} else if (!strcmp(caracteres, "roll")){
+			if (nb_element < 1){
+				return CODE_CONTINUE;
+			} else {
+				int i = 0;
+				float a = pop();
+
+				int nb_elements_initial = nb_element;
+				for (i = 0; i < nb_elements_initial; i++) {
+					float f = pop();
+					push2(f);
+				}
+				push(a);
+				for (i = 0; i < nb_elements_initial; i++) {
+					float f = pop2();
+					push(f);
+				}
+			}
+		} else if (!strcmp(caracteres, "swap")){
+			if (nb_element < 2){
+				return CODE_CONTINUE;
+			} else {
+				float a = pop();
+				float b = pop();
+				push(a);
+				push(b);
+			}
+		} else if (!strcmp(caracteres, "nroll")){
+			int n = pop();
+			if (nb_element < 3){
+				return CODE_CONTINUE;
+			} else if (n > nb_element){
+				push(n);
+				return CODE_MANQUE_ARG;
+			} else {
+				int i = 0;
+				float a = pop();
+
+				for (i = 0; i < n; i++) {
+					float f = pop();
+					push2(f);
+				}
+				push(a);
+				for (i = 0; i < n; i++) {
+					float f = pop2();
+					push(f);
+				}
+			}
+		} else if (!strcmp(caracteres, "ndup")){
+			if (nb_element < 1){
+				return CODE_MANQUE_ARG;
+			} else {
+				int n = pop();
+				int i = 0;
+				float a;
+
+				if (nb_element <= n){
+					push(n);
+					return CODE_MANQUE_ARG;
+				}
+				for (i = 0;i < n;i++){
+					float f = pop();
+					push2(f);
+				}
+				a = pop();
+
+				for (i = 0;i < n;i++){
+					float f = pop2();
+					push(f);
+				}
+				
+				push(a);
+			}
+		} else if (!strcmp(caracteres, "nswap")){
+			if (nb_element < 2){
+				return CODE_MANQUE_ARG;
+			} else {
+				int n = pop();
+				int i = 0;
+				float a;
+				float b = pop();
+
+				if(nb_element <= n){
+					push(n);
+					return CODE_MANQUE_ARG;
+				}
+				for (i = 0;i < n;i++){
+					float f = pop();
+					push2(f);
+				}
+				a = pop();
+				push(b);
+				for (i = 0;i < n;i++){
+					float f = pop2();
+					push(f);
+				}
+				push(a);
+			}
+
+		} else if (!strcmp(caracteres, "purge")){
 			while (nb_element){
 				pop();
 			}
-		} else if (!strcmp(caracteres, "q")){
+		} else if (!strcmp(caracteres, "exit")){
 			return CODE_FIN;
 		} else {
 			if (nb_element >= MAX_PILE){
@@ -160,5 +274,5 @@ int main(){
 
 		}
 	}
-	return 0;
+	return CODE_CONTINUE;
 }
