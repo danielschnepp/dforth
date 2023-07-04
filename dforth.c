@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define MAX_PILE 256
+#define MAX_TEXTE 256
 
 enum code_retour {
 	CODE_CONTINUE,
@@ -12,6 +13,8 @@ enum code_retour {
 	CODE_ERREUR,
 };
 
+char texte [MAX_TEXTE] = { 0 };
+int nb_caracteres = 0;
 int nb_element = 0;	
 int nb_element2 = 0;	
 float pile[MAX_PILE] = { 0 };
@@ -33,12 +36,18 @@ int lecture(){
 int affichage(){
 	int i;
 
-	printf("\n\n ");
+	printf("\n");
 	for (i = nb_element;i > 0;i--){
 		printf("# %f\n",pile[i-1]);
 	}
-	printf("\n\n");
 	return 0;
+}
+
+int affichage_texte(){
+	int i;
+
+	printf("%s\n", texte);
+	return CODE_CONTINUE;
 }
 
 float pop() {
@@ -81,6 +90,15 @@ enum code_retour rentre_pile(){
 				printf("%f", f); 
 				printf("\n"); 
 			}
+		} else if (!strcmp(caracteres, ".\"")){
+        		memset(texte,0,MAX_TEXTE);
+			lecture();
+			while(strcmp(caracteres, "\"")) {
+				strcat(texte, caracteres);
+				lecture();
+			}
+			affichage_texte();
+
 		} else if (!strcmp(caracteres, "+")) {
 			if (nb_element < 2){
 				return CODE_MANQUE_ARG;
@@ -257,22 +275,22 @@ int main(){
 			case CODE_CONTINUE : affichage();
 				   break;
 
-			case CODE_MANQUE_ARG : printf("Erreur : manque d'argument pour effectuer l'opération !!!\n");
+			case CODE_MANQUE_ARG : printf("\n Erreur : manque d'argument pour effectuer l'opération !!! \n  \n");
 				   break;
 
-			case CODE_TROP_NOMBRES : printf("Erreur : trop de nombres sur le pile !!!\n");
+			case CODE_TROP_NOMBRES : printf("\n Erreur : trop de nombres sur le pile !!! \n \n");
 				   break;
 
-			case CODE_FIN: printf("FIN\n");
+			case CODE_FIN: printf("\n Fin du programme, arrêt en cours \n \n");
 				   break;
 
 			case CODE_ERREUR:
-			default: printf("Erreur du programme : arrêt en cours\n");
+			default: printf("\n Erreur du programme : arrêt en cours \n \n");
 				  affichage();
 				  q = 5;
 				  break;
 
 		}
 	}
-	return CODE_CONTINUE;
+	return 0;
 }
