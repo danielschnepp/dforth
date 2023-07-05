@@ -68,8 +68,6 @@ int affichage(){
 }
 
 int affichage_texte(){
-	int i;
-
 	printf("%s\n", texte);
 	return CODE_CONTINUE;
 }
@@ -108,9 +106,6 @@ int str_is_equal(char *a, char *b) {
 }
 
 enum code_retour rentre_pile(char* c){
-
-		int i;
-
 		if (c[0] == '\0') {
 			return 0;
 		}
@@ -133,7 +128,6 @@ enum code_retour rentre_pile(char* c){
 			affichage_texte();
 		} else if (!strcmp(caracteres, ":")){
 			// Definition de fonction
-			int l1 = 0;
 
 			// nom_fonction
 			lecture_scanf();
